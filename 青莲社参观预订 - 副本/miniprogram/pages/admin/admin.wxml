@@ -1,0 +1,351 @@
+<!-- pages/admin/admin.wxml -->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">预订管理后台</text>
+    <view class="header-actions">
+      <button class="refresh-btn" bindtap="onRefresh" size="mini">刷新</button>
+      <button class="export-btn" bindtap="exportData" size="mini">导出</button>
+    </view>
+  </view>
+  
+  <!-- 搜索和筛选 -->
+  <view class="filters">
+    <!-- 搜索框 -->
+    <view class="search-box">
+      <input 
+        class="search-input" 
+        placeholder="搜索姓名或手机号" 
+        value="{{searchKeyword}}" 
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+      <button class="search-btn" bindtap="onSearch">搜索</button>
+    </view>
+    
+    <!-- 状态筛选 -->
+    <view class="status-filters">
+      <text 
+        class="status-filter {{filterStatus === 'all' ? 'active' : ''}}" 
+        bindtap="onStatusFilter" 
+        data-status="all"
+      >
+        全部({{totalCount}})
+      </text>
+      <text 
+        class="status-filter {{filterStatus === 'pending_discipline' ? 'active' : ''}}" 
+        bindtap="onStatusFilter" 
+        data-status="pending_discipline"
+      >
+        待受理
+      </text>
+      <text 
+        class="status-filter {{filterStatus === 'pending_director' ? 'active' : ''}}" 
+        bindtap="onStatusFilter" 
+        data-status="pending_director"
+      >
+        待审批
+      </text>
+      <text 
+        class="status-filter {{filterStatus === 'pending_guide' ? 'active' : ''}}" 
+        bindtap="onStatusFilter" 
+        data-status="pending_guide"
+      >
+        待安排
+      </text>
+      <text 
+        class="status-filter {{filterStatus === 'confirmed' ? 'active' : ''}}" 
+        bindtap="onStatusFilter" 
+        data-status="confirmed"
+      >
+        已确认
+      </text>
+      <text 
+        class="status-filter {{filterStatus === 'completed' ? 'active' : ''}}" 
+        bindtap="onStatusFilter" 
+        data-status="completed"
+      >
+        已完成
+      </text>
+    </view>
+  </view>
+
+  <!-- 数据列表 -->
+  <view class="booking-list">
+    <view class="booking-card" wx:for="{{bookings}}" wx:key="_id">
+      <view class="card-header">
+        <view class="booking-title">
+          <text class="booking-name">{{item.name || '未填写'}}</text>
+          <view 
+            class="booking-status" 
+            style="background-color: {{getStatusColor(item.status)}}"
+          >
+            {{getStatusText(item.status)}}
+          </view>
+        </view>
+        
+        <view class="booking-phone">
+          <text>{{item.phone || '未填写'}}</text>
+          <view class="phone-actions">
+            <button class="copy-btn" size="mini" bindtap="copyInfo" data-type="手机号" data-value="{{item.phone}}">复制</button>
+            <button class="call-btn" size="mini" bindtap="callPhone" data-phone="{{item.phone}}">拨打</button>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 内容信息 -->
+      <view class="card-content">
+        <view class="info-row">
+          <view class="info-label">预约单位：</view>
+          <view class="info-value">{{item.unit || '未填写'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">活动类型：</view>
+          <view class="info-value">{{item.activityContent || item.activityType || '未填写'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">预约日期：</view>
+          <view class="info-value">{{item.displayDate}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">时段：</view>
+          <view class="info-value">{{item.timePeriod}} {{item.startTime}}-{{item.endTime}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">需要讲解员：</view>
+          <view class="info-value">{{item.needGuide ? '是' : '否'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">参观人数：</view>
+          <view class="info-value">{{item.visitorCount}}人</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">备注：</view>
+          <view class="info-value">{{item.displayNotes}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">提交时间：</view>
+          <view class="info-value">{{item.displayCreateTime}}</view>
+        </view>
+        
+        <!-- 志愿者信息（仅在已确认状态显示） -->
+        <block wx:if="{{item.status === 'confirmed' || item.status === 'completed'}}">
+          <view class="info-section volunteer-section">
+            <view class="section-title">志愿者信息</view>
+            <view class="info-row">
+              <view class="info-label">班级：</view>
+              <view class="info-value">{{item.volunteerClass || '未安排'}}</view>
+            </view>
+            <view class="info-row">
+              <view class="info-label">姓名：</view>
+              <view class="info-value">{{item.volunteerName || '未安排'}}</view>
+            </view>
+            <view class="info-row">
+              <view class="info-label">联系电话：</view>
+              <view class="info-value">{{item.volunteerPhone || '未安排'}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="card-actions">
+        <!-- 待纪委办受理状态 -->
+        <block wx:if="{{item.status === 'pending_discipline'}}">
+          <button 
+            class="action-btn confirm-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="pending_director"
+          >
+            受理并转主任审批
+          </button>
+          
+          <button 
+            class="action-btn cancel-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="cancelled"
+          >
+            拒绝
+          </button>
+          
+          <button 
+            class="action-btn delete-btn" 
+            bindtap="deleteBooking" 
+            data-id="{{item._id}}"
+          >
+            删除
+          </button>
+        </block>
+        
+        <!-- 待主任审批状态 -->
+        <block wx:elif="{{item.status === 'pending_director'}}">
+          <button 
+            class="action-btn confirm-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="pending_guide"
+          >
+            审批通过
+          </button>
+          
+          <button 
+            class="action-btn cancel-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="cancelled"
+          >
+            审批拒绝
+          </button>
+          
+          <button 
+            class="action-btn delete-btn" 
+            bindtap="deleteBooking" 
+            data-id="{{item._id}}"
+          >
+            删除
+          </button>
+        </block>
+        
+        <!-- 待青莲社指导老师安排状态 -->
+        <block wx:elif="{{item.status === 'pending_guide'}}">
+          <button 
+            class="action-btn assign-btn" 
+            bindtap="showVolunteerModal" 
+            data-id="{{item._id}}"
+          >
+            安排志愿者
+          </button>
+          
+          <button 
+            class="action-btn cancel-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="cancelled"
+          >
+            取消
+          </button>
+          
+          <button 
+            class="action-btn delete-btn" 
+            bindtap="deleteBooking" 
+            data-id="{{item._id}}"
+          >
+            删除
+          </button>
+        </block>
+        
+        <!-- 已确认状态 -->
+        <block wx:elif="{{item.status === 'confirmed'}}">
+          <button 
+            class="action-btn send-btn" 
+            bindtap="sendNotification" 
+            data-id="{{item._id}}"
+          >
+            发送预约成功信息
+          </button>
+          
+          <button 
+            class="action-btn complete-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="completed"
+          >
+            标记为已完成
+          </button>
+          
+          <button 
+            class="action-btn delete-btn" 
+            bindtap="deleteBooking" 
+            data-id="{{item._id}}"
+          >
+            删除
+          </button>
+        </block>
+        
+        <!-- 已完成状态 -->
+        <block wx:elif="{{item.status === 'completed'}}">
+          <view class="status-actions">
+            <text class="status-label">状态：已完成</text>
+            <button 
+              class="action-btn delete-btn" 
+              bindtap="deleteBooking" 
+              data-id="{{item._id}}"
+            >
+              删除
+            </button>
+          </view>
+        </block>
+        
+        <!-- 已取消状态 -->
+        <block wx:elif="{{item.status === 'cancelled'}}">
+          <view class="status-actions">
+            <text class="status-label">状态：已取消</text>
+            <button 
+              class="action-btn delete-btn" 
+              bindtap="deleteBooking" 
+              data-id="{{item._id}}"
+            >
+              删除
+            </button>
+          </view>
+        </block>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{bookings.length === 0}}">
+      <image class="empty-icon" src="/images/empty.png"></image>
+      <text class="empty-text">
+        {{isLoading ? '加载中...' : '暂无预订数据'}}
+      </text>
+      <view class="empty-actions">
+        <button class="retry-btn" bindtap="onRefresh" wx:if="{{!isLoading}}">
+          刷新数据
+        </button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 志愿者安排弹窗 -->
+  <view class="modal" wx:if="{{showVolunteerModal}}" catchtouchmove>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">安排志愿者</text>
+        <view class="close-btn" bindtap="hideVolunteerModal">×</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">选择志愿者</text>
+          <picker mode="selector" range="{{volunteerOptions}}" value="{{volunteerIndex}}" bindchange="onVolunteerChange">
+            <view class="picker {{selectedVolunteer ? 'selected' : ''}}">
+              {{selectedVolunteer ? selectedVolunteer : '请选择志愿者'}}
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-item" wx:if="{{selectedVolunteer}}">
+          <text class="label">班级</text>
+          <input class="input" disabled value="{{volunteerClass}}" />
+        </view>
+        
+        <view class="form-item" wx:if="{{selectedVolunteer}}">
+          <text class="label">姓名</text>
+          <input class="input" disabled value="{{volunteerName}}" />
+        </view>
+        
+        <view class="form-item" wx:if="{{selectedVolunteer}}">
+          <text class="label">联系电话</text>
+          <input class="input" disabled value="{{volunteerPhone}}" />
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="modal-btn cancel-btn" bindtap="hideVolunteerModal">取消</button>
+        <button class="modal-btn confirm-btn" bindtap="assignVolunteer">确认安排</button>
+      </view>
+    </view>
+  </view>
+</view>

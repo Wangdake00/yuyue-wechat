@@ -1,0 +1,774 @@
+/* pages/profile/profile.wxss */
+.container {
+  min-height: 100vh;
+  position: relative;
+  padding: 0;
+}
+
+/* 背景图片样式 */
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.15;
+}
+
+/* 用户信息区域 */
+.user-section {
+  background: white;
+  padding: 60rpx 40rpx 40rpx;
+  margin-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  text-align: center;
+}
+
+.user-section:active {
+  background: #f8f9fa;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.user-avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  margin-bottom: 25rpx;
+  border: 4rpx solid #07C160;
+  box-shadow: 0 4rpx 20rpx rgba(7, 193, 96, 0.2);
+}
+
+.user-info {
+  flex: 1;
+  text-align: center;
+}
+
+.user-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.user-welcome {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+
+/* 退出登录按钮 */
+.logout-btn {
+  margin-top: 15rpx;
+  padding: 15rpx 40rpx;
+  background: #07C160;
+  color: white;
+  font-size: 26rpx;
+  border-radius: 30rpx;
+  border: none;
+  display: inline-block;
+  font-weight: 500;
+  box-shadow: 0 4rpx 15rpx rgba(7, 193, 96, 0.3);
+}
+
+.logout-btn::after {
+  border: none;
+}
+
+.logout-btn:active {
+  background: #06a850;
+  transform: translateY(2rpx);
+}
+
+/* 登录按钮 */
+.auth-btn {
+  background: #07C160;
+  color: white;
+  padding: 25rpx 40rpx;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+  border: none;
+  width: 100%;
+  max-width: 400rpx;
+  margin: 0 auto;
+  display: block;
+  font-weight: 500;
+  box-shadow: 0 6rpx 20rpx rgba(7, 193, 96, 0.3);
+}
+
+.auth-btn:active {
+  background: #06a850;
+}
+
+/* 手机号绑定区域 */
+.phone-section {
+  background: white;
+  padding: 40rpx 30rpx;
+  margin: 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.phone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+  text-align: left;
+}
+
+.phone-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.edit-btn {
+  font-size: 26rpx;
+  color: #07C160;
+  padding: 10rpx 24rpx;
+  border: 2rpx solid #07C160;
+  border-radius: 25rpx;
+  background: transparent;
+  font-weight: 500;
+}
+
+.edit-btn:active {
+  background: #f0f9f4;
+}
+
+/* 手机号显示 */
+.phone-number {
+  font-size: 42rpx;
+  font-weight: bold;
+  color: #07C160;
+  margin: 30rpx 0 20rpx;
+  padding: 30rpx 20rpx;
+  background: #f0f9f4;
+  border-radius: 16rpx;
+  border: 2rpx solid #07C160;
+  text-align: center;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  letter-spacing: 2rpx;
+  line-height: 1.3;
+}
+
+.phone-tip {
+  font-size: 26rpx;
+  color: #666;
+  margin-top: 15rpx;
+  line-height: 1.5;
+  text-align: center;
+  display: block;
+  width: 100%;
+  padding: 0 10rpx;
+}
+
+/* 需要绑定手机号样式 */
+.need-phone {
+  border: 2rpx dashed #07C160;
+  text-align: center;
+}
+
+.phone-buttons {
+  margin-top: 30rpx;
+}
+
+.phone-btn {
+  padding: 25rpx 0;
+  border-radius: 50rpx;
+  font-size: 28rpx;
+  border: none;
+  width: 100%;
+  max-width: 400rpx;
+  margin: 0 auto;
+  display: block;
+  font-weight: 500;
+}
+
+.phone-btn.primary {
+  background: #07C160;
+  color: white;
+  box-shadow: 0 6rpx 20rpx rgba(7, 193, 96, 0.3);
+}
+
+.phone-btn.primary:active {
+  background: #06a850;
+}
+
+/* 功能菜单 */
+.menu-section {
+  background: white;
+  margin: 20rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.08);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 35rpx 40rpx;
+  border-bottom: 1rpx solid #f8f8f8;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: #f8f9fa;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+}
+
+.menu-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: 25rpx;
+}
+
+.menu-text {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.menu-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+  font-weight: bold;
+}
+
+/* 底部信息 */
+.footer {
+  padding: 60rpx 40rpx 40rpx;
+  text-align: center;
+  background: #f5f5f5;
+}
+
+.footer-text {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+/* 手机号绑定弹窗 - 新样式 */
+
+/* 阻止背景滚动 */
+.phone-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 弹窗容器 */
+.phone-modal-container {
+  width: 90%;
+  max-width: 650rpx;
+  max-height: 85vh;
+  position: relative;
+}
+
+/* 背景装饰 */
+.modal-bg-decor {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.decor-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(7, 193, 96, 0.1), rgba(92, 219, 149, 0.1));
+}
+
+.circle-1 {
+  width: 180rpx;
+  height: 180rpx;
+  top: -40rpx;
+  left: -40rpx;
+}
+
+.circle-2 {
+  width: 140rpx;
+  height: 140rpx;
+  bottom: -20rpx;
+  right: -20rpx;
+  background: linear-gradient(135deg, rgba(37, 116, 169, 0.1), rgba(92, 219, 149, 0.1));
+}
+
+.circle-3 {
+  width: 90rpx;
+  height: 90rpx;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, rgba(251, 176, 64, 0.1), rgba(92, 219, 149, 0.1));
+}
+
+/* 弹窗卡片 */
+.phone-modal-card {
+  background: white;
+  border-radius: 24rpx;
+  padding: 50rpx 40rpx 40rpx;
+  position: relative;
+  box-shadow: 0 25rpx 60rpx rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow-y: auto;
+  max-height: 85vh;
+  box-sizing: border-box;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(80rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 弹窗头部 */
+.modal-header {
+  text-align: center;
+  margin-bottom: 50rpx;
+}
+
+/* 手机图标样式 */
+.modal-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin: 0 auto 20rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-icon::before {
+  content: '';
+  width: 50rpx;
+  height: 80rpx;
+  border: 8rpx solid #07C160;
+  border-radius: 40rpx 40rpx 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+.modal-icon::after {
+  content: '';
+  width: 40rpx;
+  height: 20rpx;
+  background: #07C160;
+  border-radius: 10rpx 10rpx 0 0;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.modal-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.modal-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 输入容器 */
+.input-container {
+  margin-bottom: 40rpx;
+}
+
+.input-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  justify-content: center;
+}
+
+.label-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.required-mark {
+  color: #ff4d4f;
+  font-size: 24rpx;
+  margin-left: 6rpx;
+}
+
+/* 手机号输入框 */
+.phone-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 16rpx;
+  padding: 0 30rpx;
+  height: 100rpx;
+  transition: all 0.3s ease;
+  position: relative;
+  margin-bottom: 15rpx;
+}
+
+.phone-input-wrapper:focus-within {
+  border-color: #07C160;
+  background: white;
+  box-shadow: 0 0 0 4rpx rgba(7, 193, 96, 0.1);
+}
+
+.phone-prefix {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+  padding-right: 20rpx;
+  min-width: 80rpx;
+}
+
+.prefix-divider {
+  width: 1px;
+  height: 40rpx;
+  background: #ddd;
+  margin-right: 20rpx;
+}
+
+.phone-input {
+  flex: 1;
+  height: 100%;
+  font-size: 32rpx;
+  color: #333;
+  background: transparent;
+  text-align: left;
+  padding-right: 10rpx;
+}
+
+.phone-input::placeholder {
+  color: #aaa;
+  font-size: 28rpx;
+}
+
+.clear-btn {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10rpx;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.clear-btn:active {
+  background: #ddd;
+  transform: scale(0.95);
+}
+
+.clear-icon {
+  font-size: 32rpx;
+  color: #999;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* 提示信息 */
+.phone-tips, .error-tips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15rpx;
+  padding-left: 10rpx;
+  text-align: center;
+}
+
+.tip-icon {
+  font-size: 24rpx;
+  color: #999;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+.error-icon {
+  font-size: 24rpx;
+  color: #ff4d4f;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.error-text {
+  font-size: 24rpx;
+  color: #ff4d4f;
+  line-height: 1.4;
+}
+
+/* 协议条款 */
+.agreement {
+  margin: 40rpx 0 50rpx;
+  padding: 20rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.agreement-label {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.agreement-text {
+  color: #666;
+  margin: 0 4rpx;
+  line-height: 1.5;
+}
+
+.agreement-link {
+  color: #07C160;
+  text-decoration: underline;
+  padding: 0 2rpx;
+  font-weight: 500;
+}
+
+/* 按钮区域 */
+.modal-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 100rpx;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-btn::after {
+  border: none;
+}
+
+.cancel-btn {
+  background: #f8f9fa;
+  color: #666;
+  border: 2rpx solid #e0e0e0;
+}
+
+.cancel-btn.btn-hover:active {
+  background: #f0f0f0;
+  transform: translateY(2rpx);
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, #07C160, #5CDB95);
+  color: white;
+  box-shadow: 0 10rpx 30rpx rgba(7, 193, 96, 0.3);
+}
+
+.confirm-btn.confirm-btn-hover:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 8rpx 25rpx rgba(7, 193, 96, 0.4);
+}
+
+.confirm-btn.disabled {
+  background: linear-gradient(135deg, #cccccc, #dddddd);
+  color: #999;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.btn-arrow {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-left: 10rpx;
+  opacity: 0.8;
+}
+
+/* 关闭按钮 */
+.close-btn {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.close-btn:active {
+  background: #f0f0f0;
+  transform: scale(0.95);
+}
+
+.close-icon {
+  font-size: 36rpx;
+  color: #999;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* 响应式调整 */
+@media (max-width: 700rpx) {
+  .user-section {
+    padding: 50rpx 30rpx 30rpx;
+  }
+  
+  .phone-section {
+    margin: 15rpx;
+    padding: 35rpx 25rpx;
+  }
+  
+  .menu-section {
+    margin: 15rpx;
+  }
+  
+  .menu-item {
+    padding: 30rpx 35rpx;
+  }
+  
+  .phone-modal-container {
+    width: 95%;
+    max-width: 600rpx;
+  }
+  
+  .phone-modal-card {
+    padding: 40rpx 30rpx 30rpx;
+  }
+  
+  .modal-title {
+    font-size: 36rpx;
+  }
+  
+  .modal-subtitle {
+    font-size: 26rpx;
+  }
+  
+  .phone-input-wrapper {
+    height: 90rpx;
+    padding: 0 25rpx;
+  }
+  
+  .phone-input {
+    font-size: 30rpx;
+  }
+  
+  .modal-btn {
+    height: 90rpx;
+    font-size: 30rpx;
+  }
+}
+
+/* 小屏幕适配 */
+@media (max-width: 500rpx) {
+  .user-avatar {
+    width: 120rpx;
+    height: 120rpx;
+  }
+  
+  .user-name {
+    font-size: 32rpx;
+  }
+  
+  .phone-number {
+    font-size: 36rpx;
+    padding: 25rpx 15rpx;
+  }
+  
+  .menu-text {
+    font-size: 30rpx;
+  }
+  
+  .phone-modal-container {
+    width: 100%;
+    max-width: 550rpx;
+  }
+  
+  .phone-modal-card {
+    padding: 35rpx 25rpx 25rpx;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+    gap: 15rpx;
+  }
+  
+  .modal-btn {
+    width: 100%;
+  }
+}

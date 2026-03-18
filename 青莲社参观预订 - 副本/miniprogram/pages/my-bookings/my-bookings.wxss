@@ -1,0 +1,683 @@
+/* pages/my-bookings/my-bookings.wxss */
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 头部 */
+.header {
+  background: white;
+  padding: 40rpx 30rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.header-title {
+  margin-bottom: 30rpx;
+  padding: 0 20rpx;
+}
+
+.title-text {
+  display: block;
+  font-size: 42rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 12rpx;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.subtitle-text {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 头部按钮 */
+.header-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 10rpx;
+  padding: 0 10rpx;
+}
+
+.refresh-btn, .new-booking-btn {
+  flex: 1;
+  padding: 22rpx 0;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.refresh-btn {
+  background: #f0f5ff;
+  color: #1890ff;
+  border: 1rpx solid #d9e7ff;
+}
+
+.refresh-btn:active {
+  background: #e6f0ff;
+}
+
+.new-booking-btn {
+  background: #07C160;
+  color: white;
+  border: 1rpx solid #07C160;
+}
+
+.new-booking-btn:active {
+  background: #06a850;
+}
+
+/* 统计区域 */
+.stats-section {
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  margin: 25rpx;
+  padding: 25rpx 15rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  border: 1rpx solid #f0f0f0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 8rpx;
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #07C160;
+  margin-bottom: 6rpx;
+  font-family: 'DIN Alternate', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #666;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* 预约列表容器 */
+.booking-list {
+  height: calc(100vh - 380rpx);
+  padding: 0 25rpx 25rpx;
+  box-sizing: border-box;
+}
+
+/* 预约卡片 */
+.booking-card {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid #f0f0f0;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 状态徽章 */
+.status-badge {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  color: white;
+  font-weight: 500;
+  z-index: 1;
+  text-align: center;
+  min-width: 70rpx;
+}
+
+/* 卡片头部 */
+.card-header {
+  padding: 25rpx 25rpx 20rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 100rpx;
+  box-sizing: border-box;
+}
+
+.booking-date-time {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.date-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20rpx;
+  min-width: 80rpx;
+}
+
+.date-day {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  line-height: 1;
+  font-family: 'DIN Alternate', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.date-month {
+  font-size: 22rpx;
+  color: #666;
+  margin-top: 6rpx;
+  text-align: center;
+}
+
+.time-section {
+  border-left: 1rpx solid #e8e8e8;
+  padding-left: 20rpx;
+  flex: 1;
+}
+
+.time-slot {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.booking-actions {
+  text-align: right;
+  min-width: 120rpx;
+}
+
+.create-time {
+  font-size: 20rpx;
+  color: #999;
+  line-height: 1.2;
+  text-align: right;
+}
+
+/* 卡片内容 */
+.card-content {
+  padding: 20rpx 25rpx;
+  box-sizing: border-box;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  min-height: 40rpx;
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  min-width: 140rpx;
+  flex-shrink: 0;
+}
+
+.label-icon {
+  font-size: 26rpx;
+  margin-right: 10rpx;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.label-text {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.3;
+}
+
+.info-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #333;
+  text-align: right;
+  word-break: break-all;
+  font-weight: 500;
+  line-height: 1.3;
+  padding-left: 10rpx;
+  box-sizing: border-box;
+}
+
+.info-value.notes {
+  color: #666;
+  font-size: 24rpx;
+  line-height: 1.4;
+  text-align: left;
+  padding-top: 4rpx;
+}
+
+/* 卡片底部 */
+.card-footer {
+  padding: 20rpx 25rpx 25rpx;
+  border-top: 1rpx solid #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90rpx;
+  box-sizing: border-box;
+}
+
+.footer-btn {
+  padding: 18rpx 36rpx;
+  border-radius: 12rpx;
+  border: none;
+  font-size: 26rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  transition: all 0.2s ease;
+  background: white;
+  min-height: 60rpx;
+}
+
+.footer-btn.cancel {
+  color: #ff4d4f;
+  border: 1rpx solid #ffd6d7;
+  background: #fff2f0;
+}
+
+.footer-btn.cancel:active {
+  background: #ffece8;
+  transform: translateY(2rpx);
+}
+
+.btn-icon {
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 18rpx 36rpx;
+  border-radius: 12rpx;
+  min-height: 60rpx;
+  box-sizing: border-box;
+}
+
+.status-info.cancelled {
+  color: #ff4d4f;
+  background: #fff2f0;
+  border: 1rpx solid #ffd6d7;
+}
+
+.status-info.completed {
+  color: #52c41a;
+  background: #f6ffed;
+  border: 1rpx solid #d9f7be;
+}
+
+.status-icon {
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+.status-text {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  margin-top: 30rpx;
+  border: 1rpx dashed #e0e0e0;
+  box-sizing: border-box;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  display: block;
+  margin-bottom: 30rpx;
+  opacity: 0.3;
+  line-height: 1;
+}
+
+.empty-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+  line-height: 1.2;
+}
+
+.empty-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+  line-height: 1.4;
+  padding: 0 20rpx;
+}
+
+.empty-action-btn {
+  display: inline-block;
+  padding: 22rpx 50rpx;
+  background: #07C160;
+  color: white;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  border: none;
+  min-width: 200rpx;
+}
+
+.empty-action-btn:active {
+  background: #06a850;
+  transform: translateY(2rpx);
+}
+
+/* 加载更多 */
+.loading-more, .no-more-data {
+  text-align: center;
+  padding: 30rpx;
+  font-size: 24rpx;
+  color: #999;
+  background: white;
+  border-radius: 12rpx;
+  margin-top: 10rpx;
+  box-sizing: border-box;
+}
+
+.loading-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+}
+
+.no-more-data {
+  color: #ccc;
+  font-style: italic;
+}
+
+/* 滚动刷新提示 */
+scroll-view {
+  box-sizing: border-box;
+}
+
+/* 下拉刷新样式 */
+scroll-view .refresher {
+  background: #f8f9fa;
+}
+
+/* 响应式设计 */
+@media (max-width: 700rpx) {
+  .header {
+    padding: 35rpx 25rpx 25rpx;
+  }
+  
+  .title-text {
+    font-size: 38rpx;
+  }
+  
+  .subtitle-text {
+    font-size: 24rpx;
+  }
+  
+  .stats-section {
+    margin: 20rpx;
+    padding: 20rpx 12rpx;
+  }
+  
+  .stat-number {
+    font-size: 32rpx;
+  }
+  
+  .stat-label {
+    font-size: 20rpx;
+  }
+  
+  .booking-list {
+    padding: 0 20rpx 20rpx;
+    height: calc(100vh - 360rpx);
+  }
+  
+  .booking-card {
+    margin-bottom: 16rpx;
+    border-radius: 14rpx;
+  }
+  
+  .card-header {
+    padding: 20rpx 20rpx 16rpx;
+  }
+  
+  .date-day {
+    font-size: 40rpx;
+  }
+  
+  .date-month {
+    font-size: 20rpx;
+  }
+  
+  .time-slot {
+    font-size: 28rpx;
+  }
+  
+  .card-content {
+    padding: 16rpx 20rpx;
+  }
+  
+  .info-section {
+    gap: 16rpx;
+  }
+  
+  .info-label {
+    min-width: 120rpx;
+  }
+  
+  .label-icon {
+    font-size: 24rpx;
+    margin-right: 8rpx;
+  }
+  
+  .label-text {
+    font-size: 22rpx;
+  }
+  
+  .info-value {
+    font-size: 24rpx;
+  }
+  
+  .card-footer {
+    padding: 16rpx 20rpx 20rpx;
+  }
+  
+  .footer-btn {
+    padding: 16rpx 30rpx;
+    font-size: 24rpx;
+  }
+  
+  .empty-state {
+    padding: 80rpx 25rpx;
+    margin-top: 25rpx;
+  }
+  
+  .empty-icon {
+    font-size: 90rpx;
+    margin-bottom: 25rpx;
+  }
+  
+  .empty-title {
+    font-size: 30rpx;
+  }
+  
+  .empty-desc {
+    font-size: 24rpx;
+  }
+  
+  .empty-action-btn {
+    padding: 20rpx 45rpx;
+    font-size: 28rpx;
+  }
+}
+
+/* 小屏幕适配 */
+@media (max-width: 500rpx) {
+  .header {
+    padding: 30rpx 20rpx 20rpx;
+  }
+  
+  .title-text {
+    font-size: 36rpx;
+  }
+  
+  .subtitle-text {
+    font-size: 22rpx;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    gap: 15rpx;
+  }
+  
+  .refresh-btn, .new-booking-btn {
+    width: 100%;
+    padding: 20rpx 0;
+  }
+  
+  .stats-section {
+    flex-wrap: wrap;
+    gap: 15rpx;
+    padding: 20rpx;
+  }
+  
+  .stat-item {
+    flex: 0 0 calc(50% - 20rpx);
+    margin-bottom: 10rpx;
+  }
+  
+  .booking-list {
+    padding: 0 15rpx 15rpx;
+    height: calc(100vh - 420rpx);
+  }
+  
+  .booking-date-time {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .date-section {
+    flex-direction: row;
+    margin-right: 0;
+    margin-bottom: 10rpx;
+  }
+  
+  .date-day {
+    margin-right: 10rpx;
+  }
+  
+  .date-month {
+    margin-top: 0;
+  }
+  
+  .time-section {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1rpx solid #f0f0f0;
+    padding-top: 10rpx;
+    width: 100%;
+  }
+  
+  .info-row {
+    flex-direction: column;
+    gap: 5rpx;
+  }
+  
+  .info-label {
+    width: 100%;
+    margin-bottom: 2rpx;
+  }
+  
+  .info-value {
+    text-align: left;
+    width: 100%;
+    padding-left: 0;
+  }
+  
+  .empty-state {
+    padding: 60rpx 20rpx;
+  }
+  
+  .empty-icon {
+    font-size: 80rpx;
+    margin-bottom: 20rpx;
+  }
+  
+  .empty-title {
+    font-size: 28rpx;
+  }
+  
+  .empty-desc {
+    font-size: 22rpx;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 400rpx) {
+  .booking-card {
+    border-radius: 12rpx;
+  }
+  
+  .card-header, .card-content, .card-footer {
+    padding: 15rpx;
+  }
+  
+  .date-day {
+    font-size: 36rpx;
+  }
+  
+  .time-slot {
+    font-size: 26rpx;
+  }
+  
+  .status-badge {
+    top: 10rpx;
+    right: 10rpx;
+    font-size: 20rpx;
+    padding: 4rpx 12rpx;
+  }
+  
+  .footer-btn, .status-info {
+    padding: 15rpx 25rpx;
+    font-size: 22rpx;
+  }
+  
+  .empty-action-btn {
+    padding: 18rpx 40rpx;
+    font-size: 26rpx;
+  }
+}

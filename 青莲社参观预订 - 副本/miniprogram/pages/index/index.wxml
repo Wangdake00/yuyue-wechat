@@ -1,0 +1,50 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 背景图片 -->
+  <image class="background-image" src="/images/小程序背景.jpeg" mode="aspectFill"></image>
+  
+  <!-- 顶部标题 -->
+  <view class="header-title">
+    <text class="title-text">广东药科大学廉洁教育馆（知行学堂）预约</text>
+    <text class="subtitle-text">欢迎预约参观</text>
+  </view>
+
+  <!-- 社徽区域 -->
+  <view class="logo-section">
+    <image class="shelian-logo" src="/images/对称版社徽.png" mode="aspectFit"></image>
+    <text class="welcome-text">廉洁教育馆参观预订系统</text>
+    
+    <button 
+      wx:if="{{!hasUserInfo && canIUseGetUserProfile}}" 
+      class="auth-btn" 
+      bindtap="getUserProfile"
+    >
+      微信一键登录
+    </button>
+    
+    <view wx:if="{{hasUserInfo}}" class="user-info">
+      <text class="user-greeting">欢迎，{{userInfo.nickName}}</text>
+    </view>
+  </view>
+
+  <!-- 参观须知 -->
+  <view class="info-section">
+    <view class="section-header">
+      <text class="section-title">参观须知</text>
+      <view class="section-line"></view>
+    </view>
+    <view class="notice-content">
+      <block wx:for="{{noticeList}}" wx:for-index="index" wx:for-item="item">
+        <view class="notice-item">
+          <text class="notice-index">{{index + 1}}</text>
+          <text class="notice-text">{{item}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="footer">
+    <text class="footer-text">技术支持：广东药科大学医药信息工程学院、广东药科大学青莲社</text>
+  </view>
+</view>

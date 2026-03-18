@@ -1,0 +1,372 @@
+/* pages/booking/booking.wxss */
+.container {
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 自定义背景图片 */
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.header {
+  padding: 60rpx 40rpx 40rpx;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+}
+
+.title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 10rpx;
+  text-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1rpx 5rpx rgba(0, 0, 0, 0.2);
+}
+
+.form-section {
+  background: rgba(255, 255, 255, 0.95);
+  margin: 0 30rpx;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  transform: translateY(-20rpx);
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+/* 统一所有输入框样式 - 未填写时为灰色 */
+.picker, .input, .textarea {
+  width: 100%;
+  padding: 30rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 15rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  min-height: 90rpx;
+  line-height: 1.4;
+  color: #666;
+}
+
+/* 输入框聚焦状态 */
+.input:focus, .textarea:focus, .picker:focus {
+  border-color: #07C160;
+  background: #f8f9fa;
+}
+
+.picker {
+  min-height: 90rpx;
+  line-height: 90rpx;
+  display: flex;
+  align-items: center;
+}
+
+.textarea {
+  height: 200rpx;
+  line-height: 1.5;
+  padding: 30rpx;
+}
+
+/* 填写后的样式 - 青色主题 */
+.picker.filled, .input.filled, .textarea.filled {
+  border-color: #07C160;
+  background: #f0f9f4;
+  color: #07C160;
+  font-weight: 500;
+}
+
+/* 选择器选中状态 */
+.picker.selected {
+  border-color: #07C160;
+  background: #f0f9f4;
+  color: #07C160;
+  font-weight: 500;
+}
+
+/* 错误状态样式 */
+.input.error, .textarea.error {
+  border-color: #ff4d4f !important;
+  background: #fff2f0 !important;
+  color: #ff4d4f;
+}
+
+.error-text {
+  display: block;
+  font-size: 26rpx;
+  color: #ff4d4f;
+  margin-top: 15rpx;
+  padding-left: 10rpx;
+  font-weight: 500;
+}
+
+/* 占位符文字样式 */
+.input::placeholder, .textarea::placeholder {
+  color: #aaa;
+  font-size: 28rpx;
+}
+
+.picker .placeholder {
+  color: #aaa;
+  font-size: 28rpx;
+}
+
+/* 时间段状态样式 */
+.time-slots-status {
+  margin-top: 20rpx;
+  padding: 25rpx;
+  background: #f8f9fa;
+  border-radius: 15rpx;
+  border: 2rpx solid #e0e0e0;
+}
+
+.status-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.time-slots-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.time-slot-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 25rpx;
+  border-radius: 12rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.time-slot-card.available {
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+.time-slot-card.booked {
+  background: #fff2f0;
+  border-color: #ffccc7;
+  opacity: 0.7;
+}
+
+.time-text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.time-slot-card.booked .time-text {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.status-text {
+  font-size: 24rpx;
+  font-weight: bold;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.status-text.available {
+  background: #52c41a;
+  color: white;
+}
+
+.status-text.booked {
+  background: #ff4d4f;
+  color: white;
+}
+
+/* 图例样式 */
+.status-legend {
+  display: flex;
+  justify-content: center;
+  gap: 30rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #e0e0e0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.legend-color {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+}
+
+.legend-color.available {
+  background: #52c41a;
+}
+
+.legend-color.booked {
+  background: #ff4d4f;
+}
+
+.legend-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.submit-btn {
+  margin: 40rpx 30rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  background: linear-gradient(135deg, #07C160, #5CDB95);
+  color: white;
+  border-radius: 15rpx;
+  font-size: 34rpx;
+  font-weight: 600;
+  box-shadow: 0 10rpx 30rpx rgba(7, 193, 96, 0.3);
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.submit-btn[disabled] {
+  background: rgba(204, 204, 204, 0.8);
+  color: #999999;
+  box-shadow: none;
+}
+
+.submit-btn:not([disabled]):active {
+  transform: translateY(5rpx);
+  box-shadow: 0 5rpx 20rpx rgba(7, 193, 96, 0.4);
+}
+
+.booked-text {
+  color: #999 !important;
+  text-decoration: line-through;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .form-section {
+    margin: 0 20rpx;
+    padding: 30rpx 25rpx;
+  }
+  
+  .input, .textarea, .picker {
+    padding: 25rpx;
+    font-size: 28rpx;
+    min-height: 85rpx;
+  }
+  
+  .textarea {
+    height: 180rpx;
+  }
+}
+
+/* 日期状态显示 */
+.date-status {
+  margin: -20rpx 0 30rpx 0;
+}
+
+.status-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.time-slots-status {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.time-slot-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25rpx;
+  border-radius: 15rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.time-slot-card.available {
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+.time-slot-card.booked {
+  background: #fff2f0;
+  border-color: #ffccc7;
+  opacity: 0.7;
+}
+
+.slot-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.time-text {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.time-slot-card.booked .time-text {
+  color: #999;
+}
+
+.slot-status {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.time-slot-card.available .slot-status {
+  color: #52c41a;
+}
+
+.time-slot-card.booked .slot-status {
+  color: #ff4d4f;
+}
+
+.slot-icon {
+  font-size: 32rpx;
+}

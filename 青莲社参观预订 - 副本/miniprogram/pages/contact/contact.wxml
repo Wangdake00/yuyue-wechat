@@ -1,0 +1,111 @@
+<!-- pages/contact/contact.wxml -->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">联系我们</text>
+    <text class="subtitle">青莲社欢迎您的咨询与参观</text>
+  </view>
+  
+  <!-- 温馨提示 -->
+  <view class="tips">
+    <text class="tips-text">如需联系青莲社，请使用以下方式</text>
+    <text class="tips-hint">温馨提示：快速点击联系方式区域3次可打开管理功能</text>
+  </view>
+  
+  <!-- 联系信息卡片 -->
+  <view class="contact-card" bindtap="onContactTap">
+    <view class="card-header">
+      <image class="header-icon" src="/images/contact-icon.png"></image>
+      <text class="header-text">联系信息</text>
+    </view>
+    
+    <view class="contact-list">
+      <!-- 电话 -->
+      <view class="contact-item">
+        <image class="item-icon" src="/images/phone-icon.png"></image>
+        <view class="item-content">
+          <text class="item-title">联系电话</text>
+          <text class="item-value">{{contactInfo.phone}}</text>
+        </view>
+        <view class="item-actions">
+          <button class="action-btn call-btn" bindtap="makePhoneCall" catchtap>拨打</button>
+          <button class="action-btn copy-btn" bindtap="copyContact" data-type="电话" data-value="{{contactInfo.phone}}" catchtap>复制</button>
+        </view>
+      </view>
+      
+      <!-- 邮箱 -->
+      <view class="contact-item">
+        <image class="item-icon" src="/images/email-icon.png"></image>
+        <view class="item-content">
+          <text class="item-title">电子邮箱</text>
+          <text class="item-value">{{contactInfo.email}}</text>
+        </view>
+        <view class="item-actions">
+          <button class="action-btn copy-btn" bindtap="copyContact" data-type="邮箱" data-value="{{contactInfo.email}}" catchtap>复制</button>
+        </view>
+      </view>
+      
+      <!-- 地址 -->
+      <view class="contact-item">
+        <image class="item-icon" src="/images/location-icon.png"></image>
+        <view class="item-content">
+          <text class="item-title">办公地址</text>
+          <text class="item-value">{{contactInfo.address}}</text>
+        </view>
+        <view class="item-actions">
+          <button class="action-btn map-btn" bindtap="openMap" catchtap>地图</button>
+          <button class="action-btn copy-btn" bindtap="copyContact" data-type="地址" data-value="{{contactInfo.address}}" catchtap>复制</button>
+        </view>
+      </view>
+      
+      <!-- 微信 -->
+      <view class="contact-item">
+        <image class="item-icon" src="/images/wechat-icon.png"></image>
+        <view class="item-content">
+          <text class="item-title">微信公众号</text>
+          <text class="item-value">{{contactInfo.wechat}}</text>
+        </view>
+        <view class="item-actions">
+          <button class="action-btn copy-btn" bindtap="copyContact" data-type="微信公众号" data-value="{{contactInfo.wechat}}" catchtap>复制</button>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 办公时间 -->
+    <view class="office-hours">
+      <text class="hours-title">办公时间</text>
+      <text class="hours-content">{{contactInfo.officeHours}}</text>
+    </view>
+  </view>
+  
+  <!-- 地图预览 -->
+  <view class="map-section">
+    <view class="map-container">
+      <!-- 这里可以使用微信地图组件或静态地图图片 -->
+      <image src="/images/map-preview.jpg" mode="aspectFill" style="width:100%;height:100%;" bindtap="openMap"></image>
+    </view>
+  </view>
+  
+  <!-- 底部信息 -->
+  <view class="footer">
+    <text class="footer-text">技术支持：广东药科大学医药信息工程学院、广东药科大学青莲社</text>
+  </view>
+  
+  <!-- 管理入口弹窗 -->
+  <view class="admin-entry-modal" wx:if="{{showAdminEntry}}" catchtouchmove>
+    <view class="admin-entry-card">
+      <text class="admin-icon">管理</text>
+      <text class="admin-title">管理后台入口</text>
+      <text class="admin-subtitle">检测到管理员操作</text>
+      
+      <view class="admin-actions">
+        <button class="admin-cancel-btn" bindtap="hideAdminEntry">取消</button>
+        <button class="admin-confirm-btn" bindtap="goToAdminLogin">进入管理</button>
+      </view>
+      
+      <view class="close-btn" bindtap="hideAdminEntry">
+        <text class="close-icon">×</text>
+      </view>
+    </view>
+  </view>
+</view>

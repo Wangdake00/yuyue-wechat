@@ -1,0 +1,416 @@
+/* pages/admin/admin.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 20rpx;
+}
+
+/* 头部 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding: 20rpx;
+  background: white;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.header-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.refresh-btn, .export-btn {
+  padding: 10rpx 20rpx;
+  font-size: 24rpx;
+  background: #1890ff;
+  color: white;
+  border-radius: 8rpx;
+  line-height: 1.2;
+}
+
+.export-btn {
+  background: #52c41a;
+}
+
+/* 筛选区域 */
+.filters {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.search-box {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 70rpx;
+  padding: 0 25rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  background: #f8f9fa;
+}
+
+.search-btn {
+  width: 140rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  background: #07C160;
+  color: white;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.status-filters {
+  display: flex;
+  justify-content: space-around;
+  gap: 20rpx;
+}
+
+.status-filter {
+  padding: 15rpx 30rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f8f9fa;
+  border: 2rpx solid #f8f9fa;
+  text-align: center;
+  flex: 1;
+}
+
+.status-filter.active {
+  background: #e6f7ff;
+  border-color: #1890ff;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+
+/* 数据列表 */
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+.booking-card {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 6rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 30rpx 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.booking-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.booking-name {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.booking-status {
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: white;
+  font-weight: 500;
+}
+
+.booking-phone {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.booking-phone text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.phone-actions {
+  display: flex;
+  gap: 10rpx;
+}
+
+.copy-btn, .call-btn {
+  padding: 6rpx 16rpx;
+  font-size: 22rpx;
+  line-height: 1.2;
+}
+
+.copy-btn {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.call-btn {
+  background: #1890ff;
+  color: white;
+}
+
+.card-content {
+  padding: 30rpx;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 15rpx;
+  font-size: 28rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  width: 140rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.info-value {
+  flex: 1;
+  color: #333;
+  word-break: break-all;
+}
+
+.card-actions {
+  display: flex;
+  padding: 0 30rpx 30rpx;
+  gap: 20rpx;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  flex: 1;
+  min-width: 140rpx;
+  padding: 20rpx 0;
+  border-radius: 10rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  border: none;
+}
+
+.confirm-btn {
+  background: #52c41a;
+  color: white;
+}
+
+.cancel-btn {
+  background: #ff4d4f;
+  color: white;
+}
+
+.complete-btn {
+  background: #1890ff;
+  color: white;
+}
+
+.delete-btn {
+  background: #f0f0f0;
+  color: #ff4d4f;
+  border: 2rpx solid #ff4d4f;
+}
+
+.assign-btn {
+  background: #1890ff;
+  color: white;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 200rpx;
+  height: 200rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  display: block;
+  font-size: 28rpx;
+  color: #999;
+  margin: 30rpx 0;
+}
+
+.retry-btn {
+  display: inline-block;
+  padding: 20rpx 60rpx;
+  background: #07C160;
+  color: white;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  border: none;
+}
+/* 在 admin.wxss 中添加 */
+.full-width {
+  flex: none !important;
+  width: 100% !important;
+}
+
+/* 状态特定的按钮样式 */
+.status-completed .action-btn,
+.status-cancelled .action-btn {
+  opacity: 0.7;
+}
+.empty-actions {
+  display: flex;
+  justify-content: center;
+  gap: 30rpx;
+  margin-top: 30rpx;
+}
+
+/* 志愿者安排弹窗样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 600rpx;
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  width: 50rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  text-align: center;
+  font-size: 40rpx;
+  color: #999;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+}
+
+.modal-btn.cancel-btn {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.modal-btn.confirm-btn {
+  background: #07C160;
+  color: white;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.picker, .input {
+  width: 100%;
+  padding: 25rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  min-height: 80rpx;
+  line-height: 1.4;
+  color: #666;
+}
+
+.picker {
+  min-height: 80rpx;
+  line-height: 80rpx;
+  display: flex;
+  align-items: center;
+}
+
+.picker.selected {
+  border-color: #07C160;
+  background: #f0f9f4;
+  color: #07C160;
+  font-weight: 500;
+}
+
+.input[disabled] {
+  background: #f5f5f5;
+  color: #999;
+}

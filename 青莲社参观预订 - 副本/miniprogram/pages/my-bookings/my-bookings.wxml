@@ -1,0 +1,207 @@
+<!-- pages/my-bookings/my-bookings.wxml -->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-title">
+      <text class="title-text">我的预约</text>
+      <text class="subtitle-text">查看和管理您的预约记录</text>
+    </view>
+    
+    <view class="header-actions">
+      <button class="refresh-btn" bindtap="onRefresh" loading="{{isLoading}}">
+        刷新列表
+      </button>
+      <button class="new-booking-btn" bindtap="goToBooking">
+        新的预约
+      </button>
+    </view>
+  </view>
+  
+  <!-- 统计区域 -->
+  <view class="stats-section">
+    <view class="stat-item">
+      <text class="stat-number">{{stats.total}}</text>
+      <text class="stat-label">总预约</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-number">{{stats.confirmed}}</text>
+      <text class="stat-label">已确认</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-number">{{stats.pending}}</text>
+      <text class="stat-label">处理中</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-number">{{stats.completed}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+  </view>
+  
+  <!-- 预约列表 -->
+  <scroll-view class="booking-list" scroll-y="{{true}}" refresher-enabled="{{true}}" refresher-triggered="{{isLoading}}" bindrefresherrefresh="onRefresh">
+    <block wx:for="{{bookings}}" wx:key="_id">
+      <view class="booking-card" data-status="{{item.status}}">
+        <!-- 状态标签 -->
+        <view class="status-badge" style="background-color: {{getStatusColor(item.status)}};">
+          {{getStatusText(item.status)}}
+        </view>
+        
+        <!-- 卡片头部 -->
+        <view class="card-header">
+          <view class="booking-date-time">
+            <view class="date-section">
+              <text class="date-day">{{getDateDay(item.displayDate)}}</text>
+              <text class="date-month">{{getDateMonth(item.displayDate)}}</text>
+            </view>
+            <view class="time-section">
+              <text class="time-slot">{{item.timePeriod}} {{item.startTime}}-{{item.endTime}}</text>
+            </view>
+          </view>
+          
+          <view class="booking-actions">
+            <text class="create-time">{{item.displayCreateTime}}</text>
+          </view>
+        </view>
+        
+        <!-- 卡片内容 -->
+        <view class="card-content">
+          <view class="info-section">
+            <view class="info-row">
+              <view class="info-label">
+                <text class="label-icon">单位</text>
+                <text class="label-text">预约单位</text>
+              </view>
+              <text class="info-value">{{item.unit}}</text>
+            </view>
+            
+            <view class="info-row">
+              <view class="info-label">
+                <text class="label-icon">活动</text>
+                <text class="label-text">活动内容</text>
+              </view>
+              <text class="info-value">{{item.activityContent || item.activityType}}</text>
+            </view>
+            
+            <view class="info-row">
+              <view class="info-label">
+                <text class="label-icon">姓名</text>
+                <text class="label-text">姓名</text>
+              </view>
+              <text class="info-value">{{item.name}}</text>
+            </view>
+            
+            <view class="info-row">
+              <view class="info-label">
+                <text class="label-icon">电话</text>
+                <text class="label-text">手机号</text>
+              </view>
+              <text class="info-value">{{item.phone}}</text>
+            </view>
+            
+            <view class="info-row">
+              <view class="info-label">
+                <text class="label-icon">人数</text>
+                <text class="label-text">参观人数</text>
+              </view>
+              <text class="info-value">{{item.visitorCount}}人</text>
+            </view>
+            
+            <view class="info-row">
+              <view class="info-label">
+                <text class="label-icon">状态</text>
+                <text class="label-text">需要讲解员</text>
+              </view>
+              <text class="info-value">{{item.needGuide ? '是' : '否'}}</text>
+            </view>
+            
+            <block wx:if="{{item.notes}}">
+              <view class="info-row">
+                <view class="info-label">
+                  <text class="label-icon">备注</text>
+                  <text class="label-text">备注</text>
+                </view>
+                <text class="info-value notes">{{item.notes}}</text>
+              </view>
+            </block>
+          </view>
+          
+          <!-- 志愿者信息（仅在已确认或已完成状态显示） -->
+          <block wx:if="{{item.status === 'confirmed' || item.status === 'completed'}}">
+            <view class="volunteer-info">
+              <view class="volunteer-title">志愿者信息</view>
+              <view class="volunteer-details">
+                <text class="volunteer-item">班级：{{item.volunteerClass || '未安排'}}</text>
+                <text class="volunteer-item">姓名：{{item.volunteerName || '未安排'}}</text>
+                <text class="volunteer-item">电话：{{item.volunteerPhone || '未安排'}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        
+        <!-- 卡片底部操作 -->
+        <view class="card-footer">
+          <block wx:if="{{item.status === 'pending_discipline' || item.status === 'pending_director' || item.status === 'pending_guide'}}">
+            <button class="footer-btn cancel" data-id="{{item._id}}" bindtap="cancelBooking">
+              <text class="btn-icon">取消</text>
+              <text class="btn-text">取消预约</text>
+            </button>
+          </block>
+          
+          <block wx:if="{{item.status === 'confirmed'}}">
+            <button class="footer-btn checkin" data-id="{{item._id}}" bindtap="checkInBooking">
+              <text class="btn-icon">签到</text>
+              <text class="btn-text">签到</text>
+            </button>
+          </block>
+          
+          <block wx:if="{{item.status === 'cancelled'}}">
+            <view class="status-info cancelled">
+              <text class="status-icon">未通过</text>
+              <text class="status-text">已取消</text>
+            </view>
+          </block>
+          
+          <block wx:if="{{item.status === 'completed'}}">
+            <view class="status-info completed">
+              <text class="status-icon">已完成</text>
+              <text class="status-text">已完成</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+    
+    <!-- 空状态 -->
+    <block wx:if="{{bookings.length === 0 && !isLoading}}">
+      <view class="empty-state">
+        <view class="empty-icon">暂无预约</view>
+        <text class="empty-title">暂无预约记录</text>
+        <text class="empty-desc">您还没有任何预约记录</text>
+        <block wx:if="{{hasPhoneNumber}}">
+          <button class="empty-action-btn" bindtap="goToBooking">
+            去预约
+          </button>
+        </block>
+        <block wx:else>
+          <button class="empty-action-btn" bindtap="showNoPhoneNumberTips">
+            绑定手机号
+          </button>
+        </block>
+      </view>
+    </block>
+    
+    <!-- 加载更多 -->
+    <block wx:if="{{bookings.length > 0 && isLoading}}">
+      <view class="loading-more">
+        <text class="loading-text">加载中...</text>
+      </view>
+    </block>
+    
+    <!-- 没有更多数据 -->
+    <block wx:if="{{bookings.length > 0 && !isLoading}}">
+      <view class="no-more-data">
+        <text>没有更多数据了</text>
+      </view>
+    </block>
+  </scroll-view>
+</view>
