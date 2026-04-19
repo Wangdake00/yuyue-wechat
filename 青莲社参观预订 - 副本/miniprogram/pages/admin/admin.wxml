@@ -33,25 +33,11 @@
         全部({{totalCount}})
       </text>
       <text 
-        class="status-filter {{filterStatus === 'pending_discipline' ? 'active' : ''}}" 
+        class="status-filter {{filterStatus === 'pending' ? 'active' : ''}}" 
         bindtap="onStatusFilter" 
-        data-status="pending_discipline"
+        data-status="pending"
       >
-        待受理
-      </text>
-      <text 
-        class="status-filter {{filterStatus === 'pending_director' ? 'active' : ''}}" 
-        bindtap="onStatusFilter" 
-        data-status="pending_director"
-      >
-        待审批
-      </text>
-      <text 
-        class="status-filter {{filterStatus === 'pending_guide' ? 'active' : ''}}" 
-        bindtap="onStatusFilter" 
-        data-status="pending_guide"
-      >
-        待安排
+        待处理
       </text>
       <text 
         class="status-filter {{filterStatus === 'confirmed' ? 'active' : ''}}" 
@@ -66,6 +52,13 @@
         data-status="completed"
       >
         已完成
+      </text>
+      <text 
+        class="status-filter {{filterStatus === 'cancelled' ? 'active' : ''}}" 
+        bindtap="onStatusFilter" 
+        data-status="cancelled"
+      >
+        已取消
       </text>
     </view>
   </view>
@@ -128,7 +121,7 @@
           <view class="info-value">{{item.displayCreateTime}}</view>
         </view>
         
-        <!-- 志愿者信息（仅在已确认状态显示） -->
+        <!-- 志愿者信息（仅在已确认或已完成状态显示） -->
         <block wx:if="{{item.status === 'confirmed' || item.status === 'completed'}}">
           <view class="info-section volunteer-section">
             <view class="section-title">志愿者信息</view>
@@ -150,72 +143,23 @@
       
       <!-- 操作按钮 -->
       <view class="card-actions">
-        <!-- 待纪委办受理状态 -->
-        <block wx:if="{{item.status === 'pending_discipline'}}">
-          <button 
-            class="action-btn confirm-btn" 
-            bindtap="updateBookingStatus" 
-            data-id="{{item._id}}" 
-            data-status="pending_director"
-          >
-            受理并转主任审批
-          </button>
-          
-          <button 
-            class="action-btn cancel-btn" 
-            bindtap="updateBookingStatus" 
-            data-id="{{item._id}}" 
-            data-status="cancelled"
-          >
-            拒绝
-          </button>
-          
-          <button 
-            class="action-btn delete-btn" 
-            bindtap="deleteBooking" 
-            data-id="{{item._id}}"
-          >
-            删除
-          </button>
-        </block>
-        
-        <!-- 待主任审批状态 -->
-        <block wx:elif="{{item.status === 'pending_director'}}">
-          <button 
-            class="action-btn confirm-btn" 
-            bindtap="updateBookingStatus" 
-            data-id="{{item._id}}" 
-            data-status="pending_guide"
-          >
-            审批通过
-          </button>
-          
-          <button 
-            class="action-btn cancel-btn" 
-            bindtap="updateBookingStatus" 
-            data-id="{{item._id}}" 
-            data-status="cancelled"
-          >
-            审批拒绝
-          </button>
-          
-          <button 
-            class="action-btn delete-btn" 
-            bindtap="deleteBooking" 
-            data-id="{{item._id}}"
-          >
-            删除
-          </button>
-        </block>
-        
-        <!-- 待青莲社指导老师安排状态 -->
-        <block wx:elif="{{item.status === 'pending_guide'}}">
+        <!-- 待处理状态 -->
+        <block wx:if="{{item.status === 'pending'}}">
           <button 
             class="action-btn assign-btn" 
             bindtap="showVolunteerModal" 
             data-id="{{item._id}}"
           >
             安排志愿者
+          </button>
+          
+          <button 
+            class="action-btn confirm-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="confirmed"
+          >
+            直接确认
           </button>
           
           <button 
@@ -239,20 +183,21 @@
         <!-- 已确认状态 -->
         <block wx:elif="{{item.status === 'confirmed'}}">
           <button 
-            class="action-btn send-btn" 
-            bindtap="sendNotification" 
-            data-id="{{item._id}}"
-          >
-            发送预约成功信息
-          </button>
-          
-          <button 
             class="action-btn complete-btn" 
             bindtap="updateBookingStatus" 
             data-id="{{item._id}}" 
             data-status="completed"
           >
             标记为已完成
+          </button>
+          
+          <button 
+            class="action-btn cancel-btn" 
+            bindtap="updateBookingStatus" 
+            data-id="{{item._id}}" 
+            data-status="cancelled"
+          >
+            取消
           </button>
           
           <button 

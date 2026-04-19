@@ -1,3 +1,4 @@
+const app = getApp();
 const volunteers = require('../../data/volunteers.js');
 
 Page({
@@ -8,7 +9,6 @@ Page({
     filterStatus: 'all',
     searchKeyword: '',
     
-    // 志愿者安排弹窗
     showVolunteerModal: false,
     currentBookingId: '',
     volunteerOptions: [],
@@ -16,28 +16,62 @@ Page({
     selectedVolunteer: '',
     volunteerClass: '',
     volunteerName: '',
-    volunteerPhone: '',
-    
-    // 订阅消息相关
-    appid: ''	, // 小程序AppID
-    secret: '', // 小程序密钥
-    token: '', // 访问令牌
-    userOpenid: '', // 用户OpenID
-    mobanID: 'Zcv2dCzC0KPI3UcnNqVDgbOjcsfdzZ5xofC1Ovz3d0A' // 模板ID
+    volunteerPhone: ''
   },
 
   onLoad: function() {
-    this.initVolunteerOptions();
-    this.loadAllBookings();
-    // 初始化订阅消息相关信息
-    this.getcode();
+    this.checkAdminPermission();
   },
 
   onShow: function() {
-    this.loadAllBookings();
+    this.checkAdminPermission();
   },
 
-  // 加载所有预订数据
+  checkAdminPermission: function() {
+    const userDataStr = wx.getStorageSync('userData');
+    
+    if (!userDataStr) {
+      wx.showModal({
+        title: '请先登录',
+        content: '您还未登录，请先登录',
+        showCancel: false,
+        success: () => {
+          wx.switchTab({
+            url: '/pages/profile/profile'
+          });
+        }
+      });
+      return;
+    }
+    
+    try {
+      const userData = JSON.parse(userDataStr);
+      console.log('管理员页面 - 用户数据:', userData);
+      
+      if (!userData.isAdmin) {
+        wx.showModal({
+          title: '权限不足',
+          content: '您不是管理员，无法访问此页面',
+          showCancel: false,
+          success: () => {
+            wx.switchTab({
+              url: '/pages/index/index'
+            });
+          }
+        });
+        return;
+      }
+      
+      this.initVolunteerOptions();
+      this.loadAllBookings();
+    } catch (e) {
+      console.error('解析用户数据失败:', e);
+      wx.switchTab({
+        url: '/pages/profile/profile'
+      });
+    }
+  },
+
   loadAllBookings: function() {
     if (this.data.isLoading) return;
     
@@ -115,19 +149,16 @@ Page({
       });
   },
 
-  // 搜索输入
   onSearchInput: function(e) {
     this.setData({
       searchKeyword: e.detail.value.trim()
     });
   },
 
-  // 执行搜索
   onSearch: function() {
     this.loadAllBookings();
   },
 
-  // 状态筛选
   onStatusFilter: function(e) {
     const status = e.currentTarget.dataset.status;
     this.setData({
@@ -137,12 +168,9 @@ Page({
     });
   },
 
-  // 获取状态文本
   getStatusText: function(status) {
     const statusMap = {
-      'pending_discipline': '待受理',
-      'pending_director': '待审批',
-      'pending_guide': '待安排',
+      'pending': '待处理',
       'confirmed': '已确认',
       'cancelled': '已取消',
       'completed': '已完成'
@@ -150,12 +178,9 @@ Page({
     return statusMap[status] || status;
   },
 
-  // 获取状态颜色
   getStatusColor: function(status) {
     const colorMap = {
-      'pending_discipline': '#faad14',
-      'pending_director': '#1890ff',
-      'pending_guide': '#722ed1',
+      'pending': '#faad14',
       'confirmed': '#52c41a',
       'cancelled': '#ff4d4f',
       'completed': '#13c2c2'
@@ -163,7 +188,6 @@ Page({
     return colorMap[status] || '#666';
   },
 
-  // 格式化日期
   formatDate: function(dateValue) {
     if (!dateValue) return '未设置';
     
@@ -207,7 +231,6 @@ Page({
     }
   },
 
-  // 格式化日期时间
   formatDateTime: function(dateTimeValue) {
     if (!dateTimeValue) return '未记录';
     
@@ -241,7 +264,6 @@ Page({
     }
   },
 
-  // 更新预订状态
   updateBookingStatus: function(e) {
     const bookingId = e.currentTarget.dataset.id;
     const newStatus = e.currentTarget.dataset.status;
@@ -250,8 +272,6 @@ Page({
     if (!booking) return;
     
     const statusTextMap = {
-      'pending_director': '受理并转主任审批',
-      'pending_guide': '审批通过',
       'confirmed': '确认',
       'cancelled': '取消',
       'completed': '完成'
@@ -268,7 +288,6 @@ Page({
     });
   },
 
-  // 执行状态更新
   doUpdateStatus: function(bookingId, newStatus) {
     wx.showLoading({
       title: '处理中...',
@@ -287,8 +306,6 @@ Page({
       wx.hideLoading();
       
       const statusTextMap = {
-        'pending_director': '受理',
-        'pending_guide': '审批通过',
         'confirmed': '确认',
         'cancelled': '取消',
         'completed': '完成'
@@ -314,9 +331,34 @@ Page({
     });
   },
 
-  // 初始化志愿者选项
   initVolunteerOptions: function() {
-    // 优先使用本地志愿者数据
+    const db = wx.cloud.database();
+    
+    db.collection('volunteers')
+      .orderBy('name', 'asc')
+      .get()
+      .then(res => {
+        if (res.data.length > 0) {
+          const volunteerOptions = res.data.map(v => 
+            `${v.name} (${v.class || v.className})`
+          );
+          
+          this.setData({
+            volunteerOptions: volunteerOptions,
+            volunteers: res.data
+          });
+          console.log('使用云数据库志愿者数据，共', res.data.length, '条');
+        } else {
+          this.useLocalVolunteers();
+        }
+      })
+      .catch(err => {
+        console.error('获取云数据库志愿者失败，使用本地数据：', err);
+        this.useLocalVolunteers();
+      });
+  },
+  
+  useLocalVolunteers: function() {
     const localVolunteers = volunteers.volunteers;
     
     if (localVolunteers && localVolunteers.length > 0) {
@@ -329,31 +371,69 @@ Page({
         volunteers: localVolunteers
       });
       console.log('使用本地志愿者数据');
-    } else {
-      // 本地数据不存在时，从云数据库获取
-      const db = wx.cloud.database();
       
-      db.collection('volunteers')
-        .orderBy('name', 'asc')
-        .get()
-        .then(res => {
-          const volunteerOptions = res.data.map(v => 
-            `${v.name} (${v.class || v.className})`
-          );
-          
-          this.setData({
-            volunteerOptions: volunteerOptions,
-            volunteers: res.data
-          });
-          console.log('使用云数据库志愿者数据');
-        })
-        .catch(err => {
-          console.error('获取志愿者列表失败：', err);
-        });
+      wx.showModal({
+        title: '提示',
+        content: '云数据库中没有志愿者数据，是否将本地数据导入到云数据库？',
+        confirmText: '导入',
+        cancelText: '稍后',
+        success: (res) => {
+          if (res.confirm) {
+            this.importVolunteersToCloud();
+          }
+        }
+      });
     }
   },
+  
+  importVolunteersToCloud: function() {
+    const localVolunteers = volunteers.volunteers;
+    
+    if (!localVolunteers || localVolunteers.length === 0) {
+      wx.showToast({
+        title: '没有本地数据可导入',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.showLoading({
+      title: '导入中...',
+      mask: true
+    });
+    
+    const db = wx.cloud.database();
+    let successCount = 0;
+    let failCount = 0;
+    
+    const promises = localVolunteers.map(v => {
+      return db.collection('volunteers').add({
+        data: {
+          name: v.name,
+          class: v.class || v.className,
+          phone: v.phone,
+          createTime: db.serverDate()
+        }
+      }).then(() => {
+        successCount++;
+      }).catch(() => {
+        failCount++;
+      });
+    });
+    
+    Promise.all(promises).then(() => {
+      wx.hideLoading();
+      wx.showModal({
+        title: '导入完成',
+        content: `成功导入 ${successCount} 条，失败 ${failCount} 条`,
+        showCancel: false,
+        success: () => {
+          this.initVolunteerOptions();
+        }
+      });
+    });
+  },
 
-  // 显示志愿者安排弹窗
   showVolunteerModal: function(e) {
     const bookingId = e.currentTarget.dataset.id;
     const booking = this.data.bookings.find(item => item._id === bookingId);
@@ -371,7 +451,6 @@ Page({
     });
   },
 
-  // 隐藏志愿者安排弹窗
   hideVolunteerModal: function() {
     this.setData({
       showVolunteerModal: false,
@@ -384,7 +463,6 @@ Page({
     });
   },
 
-  // 志愿者选择变化
   onVolunteerChange: function(e) {
     const index = parseInt(e.detail.value);
     const volunteer = this.data.volunteers[index];
@@ -399,7 +477,6 @@ Page({
     });
   },
 
-  // 安排志愿者
   assignVolunteer: function() {
     const { currentBookingId, volunteerClass, volunteerName, volunteerPhone } = this.data;
     
@@ -423,7 +500,7 @@ Page({
         volunteerClass: volunteerClass,
         volunteerName: volunteerName,
         volunteerPhone: volunteerPhone,
-        status: 'pending_confirm',
+        status: 'confirmed',
         updateTime: db.serverDate()
       }
     })
@@ -447,132 +524,6 @@ Page({
     });
   },
 
-  // 发送预约成功信息
-  sendNotification: function(e) {
-    const bookingId = e.currentTarget.dataset.id;
-    const booking = this.data.bookings.find(item => item._id === bookingId);
-    
-    if (!booking) return;
-    
-    // 构建预约成功信息
-    const message = `【预约成功通知】\n\n` +
-      `预约单位：${booking.unit}\n` +
-      `活动内容：${booking.activityContent || booking.activityType}\n` +
-      `预约时间：${booking.displayDate} ${booking.timePeriod} ${booking.startTime}-${booking.endTime}\n` +
-      `参观人数：${booking.visitorCount}人\n` +
-      `需要讲解员：${booking.needGuide ? '是' : '否'}\n\n` +
-      `志愿者信息：\n` +
-      `班级：${booking.volunteerClass || '未安排'}\n` +
-      `姓名：${booking.volunteerName || '未安排'}\n` +
-      `联系电话：${booking.volunteerPhone || '未安排'}\n\n` +
-      `请按时参加活动，如有问题请联系纪委办公室。`;
-    
-    wx.showModal({
-      title: '发送预约成功信息',
-      content: message,
-      confirmText: '发送订阅消息',
-      cancelText: '复制文本',
-      success: (res) => {
-        if (res.confirm) {
-          // 发送订阅消息
-          this.sendSubscribeMessage(booking);
-        } else if (res.cancel) {
-          // 复制到剪贴板
-          wx.setClipboardData({
-            data: message,
-            success: () => {
-              wx.showToast({
-                title: '已复制到剪贴板',
-                icon: 'success'
-              });
-              
-              // 提示用户通过微信发送
-              setTimeout(() => {
-                wx.showModal({
-                  title: '提示',
-                  content: '信息已复制到剪贴板，请通过微信或其他方式发送给预约人',
-                  showCancel: false
-                });
-              }, 1500);
-            }
-          });
-        }
-      }
-    });
-  },
-  
-  // 发送订阅消息
-  sendSubscribeMessage: function(booking) {
-    wx.showLoading({
-      title: '发送中...',
-      mask: true
-    });
-    
-    // 构建消息数据
-    const templateId = 'Zcv2dCzC0KPI3UcnNqVDgbOjcsfdzZ5xofC1Ovz3d0A';
-    const data = {
-      phrase9: {
-        value: '已同意'
-      },
-      phrase14: {
-        value: '预约成功'
-      },
-      time22: {
-        value: `${booking.displayDate} ${booking.startTime}`
-      },
-      name1: {
-        value: booking.name
-      }
-    };
-    
-    // 发送订阅消息
-    wx.requestSubscribeMessage({
-      tmplIds: [templateId],
-      success: (res) => {
-        if (res[templateId] === 'accept') {
-          wx.cloud.callFunction({
-            name: 'sendSubscribeMessage',
-            data: {
-              templateId: templateId,
-              data: data,
-              page: 'pages/my-bookings/my-bookings'
-            },
-            success: (res) => {
-              wx.hideLoading();
-              wx.showToast({
-                title: '订阅消息发送成功',
-                icon: 'success'
-              });
-            },
-            fail: (err) => {
-              wx.hideLoading();
-              console.error('发送订阅消息失败：', err);
-              wx.showToast({
-                title: '发送失败，请重试',
-                icon: 'none'
-              });
-            }
-          });
-        } else {
-          wx.hideLoading();
-          wx.showToast({
-            title: '用户拒绝订阅消息',
-            icon: 'none'
-          });
-        }
-      },
-      fail: (err) => {
-        wx.hideLoading();
-        console.error('请求订阅消息失败：', err);
-        wx.showToast({
-          title: '请求订阅失败，请重试',
-          icon: 'none'
-        });
-      }
-    });
-  },
-
-  // 删除预订
   deleteBooking: function(e) {
     const bookingId = e.currentTarget.dataset.id;
     const booking = this.data.bookings.find(item => item._id === bookingId);
@@ -593,7 +544,6 @@ Page({
     });
   },
 
-  // 执行删除
   doDeleteBooking: function(bookingId) {
     wx.showLoading({
       title: '删除中...',
@@ -622,7 +572,6 @@ Page({
       });
   },
 
-  // 复制信息
   copyInfo: function(e) {
     const type = e.currentTarget.dataset.type;
     const value = e.currentTarget.dataset.value;
@@ -640,7 +589,6 @@ Page({
     });
   },
 
-  // 拨打电话
   callPhone: function(e) {
     const phone = e.currentTarget.dataset.phone;
     
@@ -651,12 +599,10 @@ Page({
     });
   },
 
-  // 刷新数据
   onRefresh: function() {
     this.loadAllBookings();
   },
 
-  // 导出数据
   exportData: function() {
     if (this.data.bookings.length === 0) {
       wx.showToast({
@@ -711,217 +657,5 @@ Page({
         });
       }
     });
-  },
-  
-  // 获取access_token
-  gettoken() {
-    var appid = this.data.appid;
-    var secret = this.data.secret;
-    
-    if (!appid || !secret) {
-      console.error('请填写小程序AppID和密钥');
-      return;
-    }
-    
-    wx.request({
-      url: 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + appid + '&secret=' + secret,
-      method: 'GET',
-      data: {},
-      header: {},
-      success: res => {
-        if (res.data.access_token) {
-          var token = res.data.access_token;
-          this.setData({
-            token: token
-          });
-          console.log('获取token成功:', token);
-        } else {
-          console.error('获取token失败:', res.data);
-        }
-      },
-      fail: err => {
-        console.error('请求token失败:', err);
-      }
-    });
-  },
-  
-  // 获取code
-  getcode() {
-    wx.login({
-      success: (res) => {
-        if (res.code) {
-          console.log('获取code成功:', res.code);
-          this.getopenid(res.code);
-        } else {
-          console.error('获取code失败:', res.errMsg);
-        }
-      },
-      fail: err => {
-        console.error('登录失败:', err);
-      }
-    });
-  },
-  
-  // 获取openid
-  getopenid(code) {
-    var appid = this.data.appid;
-    var secret = this.data.secret;
-    
-    if (!appid || !secret) {
-      console.error('请填写小程序AppID和密钥');
-      return;
-    }
-    
-    wx.request({
-      url: 'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + code + '&grant_type=authorization_code',
-      method: 'GET',
-      header: {},
-      success: res => {
-        if (res.data.openid) {
-          console.log('获取openid成功:', res.data.openid);
-          this.setData({
-            userOpenid: res.data.openid
-          });
-        } else {
-          console.error('获取openid失败:', res.data);
-        }
-      },
-      fail: err => {
-        console.error('请求openid失败:', err);
-      }
-    });
-  },
-  
-  // 发送消息
-  send(booking) {
-    var token = this.data.token;
-    var userOpenid = this.data.userOpenid;
-    var mobanID = this.data.mobanID;
-    
-    if (!token) {
-      console.error('请先获取token');
-      this.gettoken();
-      return;
-    }
-    
-    if (!userOpenid) {
-      console.error('请先获取openid');
-      this.getcode();
-      return;
-    }
-    
-    // 构建消息数据
-    const data = {
-      phrase9: {
-        value: '已同意'
-      },
-      phrase14: {
-        value: '预约成功'
-      },
-      time22: {
-        value: `${booking.displayDate} ${booking.startTime}`
-      },
-      name1: {
-        value: booking.name
-      }
-    };
-    
-    wx.request({
-      url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=' + token,
-      method: 'POST',
-      data: {
-        "touser": userOpenid,
-        "template_id": mobanID,
-        "page": "pages/my-bookings/my-bookings",
-        "data": data
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success: res => {
-        console.log('发送消息返回:', res.data);
-        if (res.data.errcode === 0) {
-          wx.hideLoading();
-          wx.showToast({
-            title: '订阅消息发送成功',
-            icon: 'success'
-          });
-        } else {
-          wx.hideLoading();
-          wx.showToast({
-            title: '发送失败: ' + res.data.errmsg,
-            icon: 'none'
-          });
-        }
-      },
-      fail: err => {
-        wx.hideLoading();
-        console.error('发送消息失败:', err);
-        wx.showToast({
-          title: '发送失败，请重试',
-          icon: 'none'
-        });
-      }
-    });
-  },
-  
-  // 调用订阅
-  handleSubscribe(booking) {
-    var mobanID = this.data.mobanID;
-    
-    wx.requestSubscribeMessage({
-      tmplIds: [mobanID],
-      success: (res) => {
-        if (res[mobanID] === 'accept') {
-          console.log('用户同意订阅该模板');
-          this.send(booking);
-        } else {
-          wx.hideLoading();
-          wx.showToast({
-            title: '用户拒绝订阅消息',
-            icon: 'none'
-          });
-        }
-      },
-      fail: (err) => {
-        wx.hideLoading();
-        console.error('授权调用失败', err);
-        wx.showToast({
-          title: '请求订阅失败，请重试',
-          icon: 'none'
-        });
-      }
-    });
-  },
-  
-  // 发送订阅消息
-  sendSubscribeMessage: function(booking) {
-    wx.showLoading({
-      title: '发送中...',
-      mask: true
-    });
-    
-    // 检查是否有AppID和密钥
-    if (!this.data.appid || !this.data.secret) {
-      wx.hideLoading();
-      wx.showModal({
-        title: '提示',
-        content: '请在代码中填写小程序AppID和密钥',
-        showCancel: false
-      });
-      return;
-    }
-    
-    // 检查是否有token和openid
-    if (!this.data.token) {
-      this.gettoken();
-    }
-    
-    if (!this.data.userOpenid) {
-      this.getcode();
-    }
-    
-    // 调用订阅
-    this.handleSubscribe(booking);
   }
 });

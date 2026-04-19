@@ -1,9 +1,8 @@
 Page({
   data: {
-    phone: '',
     bookings: [],
     isLoading: false,
-    hasPhoneNumber: false,
+    isLoggedIn: false,
     stats: {
       total: 0,
       confirmed: 0,
@@ -14,37 +13,37 @@ Page({
   },
   
   onLoad: function() {
-    const phoneNumber = wx.getStorageSync('phoneNumber');
-    if (phoneNumber) {
-      this.setData({
-        phone: phoneNumber,
-        hasPhoneNumber: true
-      });
-      this.loadBookings();
-    } else {
-      this.showNoPhoneNumberTips();
-    }
+    this.checkLoginStatus();
   },
   
   onShow: function() {
-    const phoneNumber = wx.getStorageSync('phoneNumber');
-    if (phoneNumber) {
+    this.checkLoginStatus();
+  },
+  
+  checkLoginStatus: function() {
+    const openid = wx.getStorageSync('openid');
+    const userDataStr = wx.getStorageSync('userData');
+    
+    if (openid && userDataStr) {
       this.setData({
-        phone: phoneNumber,
-        hasPhoneNumber: true
+        isLoggedIn: true
       });
-      this.loadBookings();
-    } else if (this.data.hasPhoneNumber) {
-      this.showNoPhoneNumberTips();
+      this.loadBookings(openid);
+    } else {
+      this.setData({
+        isLoggedIn: false,
+        bookings: []
+      });
+      this.showLoginTips();
     }
   },
   
-  showNoPhoneNumberTips: function() {
+  showLoginTips: function() {
     wx.showModal({
-      title: '需要绑定手机号',
-      content: '请先到个人中心绑定手机号以查看预约记录',
+      title: '请先登录',
+      content: '请先登录后查看您的预约记录',
       showCancel: false,
-      confirmText: '去绑定',
+      confirmText: '去登录',
       success: (res) => {
         if (res.confirm) {
           wx.switchTab({
@@ -55,7 +54,7 @@ Page({
     });
   },
   
-  loadBookings: function() {
+  loadBookings: function(openid) {
     if (this.data.isLoading) return;
     
     this.setData({ 
@@ -71,7 +70,7 @@ Page({
     
     db.collection('bookings')
       .where({
-        phone: this.data.phone
+        openid: openid
       })
       .orderBy('createTime', 'desc')
       .get()
@@ -124,7 +123,7 @@ Page({
     bookings.forEach(item => {
       if (item.status === 'confirmed') {
         stats.confirmed++;
-      } else if (item.status === 'pending_discipline' || item.status === 'pending_director' || item.status === 'pending_guide') {
+      } else if (item.status === 'pending') {
         stats.pending++;
       } else if (item.status === 'cancelled') {
         stats.cancelled++;
@@ -138,9 +137,7 @@ Page({
   
   getStatusText: function(status) {
     const statusMap = {
-      'pending_discipline': '待受理',
-      'pending_director': '待审批',
-      'pending_guide': '待安排',
+      'pending': '待处理',
       'confirmed': '已确认',
       'cancelled': '已取消',
       'completed': '已完成'
@@ -150,9 +147,7 @@ Page({
   
   getStatusColor: function(status) {
     const colorMap = {
-      'pending_discipline': '#faad14',
-      'pending_director': '#1890ff',
-      'pending_guide': '#722ed1',
+      'pending': '#faad14',
       'confirmed': '#52c41a',
       'cancelled': '#ff4d4f',
       'completed': '#13c2c2'
@@ -160,13 +155,11 @@ Page({
     return colorMap[status] || '#666';
   },
   
-  // 新增：获取日期的日
   getDateDay: function(dateStr) {
     if (!dateStr) return '';
     return dateStr.split('-')[2];
   },
   
-  // 新增：获取日期的月
   getDateMonth: function(dateStr) {
     if (!dateStr) return '';
     const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
@@ -237,7 +230,6 @@ Page({
     }
   },
   
-  // 签到功能
   checkInBooking: function(e) {
     const bookingId = e.currentTarget.dataset.id;
     const booking = this.data.bookings.find(item => item._id === bookingId);
@@ -258,7 +250,6 @@ Page({
       return;
     }
     
-    // 检查是否在预约时间当天
     const today = new Date();
     const bookingDate = new Date(booking.date);
     
@@ -305,7 +296,8 @@ Page({
         icon: 'success'
       });
       
-      this.loadBookings();
+      const openid = wx.getStorageSync('openid');
+      this.loadBookings(openid);
     })
     .catch(err => {
       wx.hideLoading();
@@ -372,7 +364,8 @@ Page({
         icon: 'success'
       });
       
-      this.loadBookings();
+      const openid = wx.getStorageSync('openid');
+      this.loadBookings(openid);
     })
     .catch(err => {
       wx.hideLoading();
@@ -387,11 +380,67 @@ Page({
   },
   
   onRefresh: function() {
-    if (this.data.hasPhoneNumber) {
-      this.loadBookings();
+    const openid = wx.getStorageSync('openid');
+    if (openid) {
+      this.loadBookings(openid);
     } else {
-      this.showNoPhoneNumberTips();
+      this.showLoginTips();
     }
+  },
+  
+  deleteBooking: function(e) {
+    const bookingId = e.currentTarget.dataset.id;
+    const booking = this.data.bookings.find(item => item._id === bookingId);
+    
+    if (!booking) {
+      wx.showToast({
+        title: '预订不存在',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.showModal({
+      title: '确认删除',
+      content: `确定要永久删除 ${booking.displayDate} 的预约记录吗？\n\n此操作不可恢复！`,
+      confirmColor: '#ff4d4f',
+      confirmText: '确认删除',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.doDeleteBooking(bookingId);
+        }
+      }
+    });
+  },
+  
+  doDeleteBooking: function(bookingId) {
+    wx.showLoading({
+      title: '删除中...',
+      mask: true
+    });
+    
+    const db = wx.cloud.database();
+    
+    db.collection('bookings').doc(bookingId).remove()
+      .then(res => {
+        wx.hideLoading();
+        
+        wx.showToast({
+          title: '删除成功',
+          icon: 'success'
+        });
+        const openid = wx.getStorageSync('openid');
+        this.loadBookings(openid);
+      })
+      .catch(err => {
+        wx.hideLoading();
+        console.error('删除失败：', err);
+        wx.showToast({
+          title: '删除失败，请重试',
+          icon: 'none'
+        });
+      });
   },
   
   goToBooking: function() {

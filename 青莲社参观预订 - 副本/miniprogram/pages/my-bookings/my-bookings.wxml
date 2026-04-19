@@ -145,6 +145,10 @@
               <text class="btn-icon">取消</text>
               <text class="btn-text">取消预约</text>
             </button>
+            <button class="footer-btn delete" data-id="{{item._id}}" bindtap="deleteBooking">
+              <text class="btn-icon">删除</text>
+              <text class="btn-text">删除</text>
+            </button>
           </block>
           
           <block wx:if="{{item.status === 'confirmed'}}">
@@ -152,20 +156,24 @@
               <text class="btn-icon">签到</text>
               <text class="btn-text">签到</text>
             </button>
+            <button class="footer-btn delete" data-id="{{item._id}}" bindtap="deleteBooking">
+              <text class="btn-icon">删除</text>
+              <text class="btn-text">删除</text>
+            </button>
           </block>
           
           <block wx:if="{{item.status === 'cancelled'}}">
-            <view class="status-info cancelled">
-              <text class="status-icon">未通过</text>
-              <text class="status-text">已取消</text>
-            </view>
+            <button class="footer-btn delete" data-id="{{item._id}}" bindtap="deleteBooking">
+              <text class="btn-icon">删除</text>
+              <text class="btn-text">删除</text>
+            </button>
           </block>
           
           <block wx:if="{{item.status === 'completed'}}">
-            <view class="status-info completed">
-              <text class="status-icon">已完成</text>
-              <text class="status-text">已完成</text>
-            </view>
+            <button class="footer-btn delete" data-id="{{item._id}}" bindtap="deleteBooking">
+              <text class="btn-icon">删除</text>
+              <text class="btn-text">删除</text>
+            </button>
           </block>
         </view>
       </view>

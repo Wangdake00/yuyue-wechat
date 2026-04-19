@@ -4,7 +4,8 @@
     "pages/booking/booking",
     "pages/profile/profile",
     "pages/my-bookings/my-bookings",
-    "pages/admin/admin"
+    "pages/admin/admin",
+    "pages/login/login"
   ],
   "window": {
     "backgroundTextStyle": "light",

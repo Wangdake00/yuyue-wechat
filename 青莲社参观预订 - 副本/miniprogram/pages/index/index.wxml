@@ -13,18 +13,6 @@
   <view class="logo-section">
     <image class="shelian-logo" src="/images/对称版社徽.png" mode="aspectFit"></image>
     <text class="welcome-text">廉洁教育馆参观预订系统</text>
-    
-    <button 
-      wx:if="{{!hasUserInfo && canIUseGetUserProfile}}" 
-      class="auth-btn" 
-      bindtap="getUserProfile"
-    >
-      微信一键登录
-    </button>
-    
-    <view wx:if="{{hasUserInfo}}" class="user-info">
-      <text class="user-greeting">欢迎，{{userInfo.nickName}}</text>
-    </view>
   </view>
 
   <!-- 参观须知 -->

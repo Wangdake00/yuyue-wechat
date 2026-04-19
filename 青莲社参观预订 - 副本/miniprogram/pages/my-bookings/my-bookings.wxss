@@ -309,6 +309,28 @@
   transform: translateY(2rpx);
 }
 
+.footer-btn.delete {
+  color: #ff4d4f;
+  border: 1rpx solid #ffd6d7;
+  background: #fff2f0;
+}
+
+.footer-btn.delete:active {
+  background: #ffece8;
+  transform: translateY(2rpx);
+}
+
+.footer-btn.checkin {
+  color: #07C160;
+  border: 1rpx solid #b7eb8f;
+  background: #f6ffed;
+}
+
+.footer-btn.checkin:active {
+  background: #d9f7be;
+  transform: translateY(2rpx);
+}
+
 .btn-icon {
   font-size: 22rpx;
   font-weight: bold;

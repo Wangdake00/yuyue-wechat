@@ -1,0 +1,49 @@
+<view class="login-container">
+  <view class="login-header">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <text class="title">广东药科大学廉洁教育馆</text>
+    <text class="subtitle">（知行学堂）预约系统</text>
+  </view>
+  
+  <view class="login-content">
+    <view class="welcome-text">
+      <text>欢迎使用预约系统</text>
+    </view>
+    
+    <view class="feature-list">
+      <view class="feature-item">
+        <text class="feature-icon">📅</text>
+        <text class="feature-text">在线预约参观</text>
+      </view>
+      <view class="feature-item">
+        <text class="feature-icon">📋</text>
+        <text class="feature-text">查看预约记录</text>
+      </view>
+      <view class="feature-item">
+        <text class="feature-icon">🔔</text>
+        <text class="feature-text">预约状态提醒</text>
+      </view>
+    </view>
+    
+    <button 
+      class="login-btn" 
+      bindtap="getUserProfile"
+      loading="{{isLoading}}"
+      disabled="{{isLoading}}"
+    >
+      {{isLoading ? '登录中...' : '微信授权登录'}}
+    </button>
+    
+    <view class="tips">
+      <text>登录即表示同意</text>
+      <text class="link">《用户协议》</text>
+      <text>和</text>
+      <text class="link">《隐私政策》</text>
+    </view>
+  </view>
+  
+  <view class="login-footer">
+    <text>技术支持：广东药科大学医药信息工程学院</text>
+    <text>广东药科大学青莲社</text>
+  </view>
+</view>

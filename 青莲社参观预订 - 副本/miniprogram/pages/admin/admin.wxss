@@ -41,6 +41,19 @@
   background: #52c41a;
 }
 
+.subscribe-btn {
+  padding: 10rpx 20rpx;
+  font-size: 24rpx;
+  background: #faad14;
+  color: white;
+  border-radius: 8rpx;
+  line-height: 1.2;
+}
+
+.subscribe-btn.subscribed {
+  background: #52c41a;
+}
+
 /* 筛选区域 */
 .filters {
   background: white;

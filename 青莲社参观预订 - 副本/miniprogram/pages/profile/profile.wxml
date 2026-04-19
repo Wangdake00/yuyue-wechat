@@ -1,191 +1,74 @@
 <view class="container">
-  <!-- 背景图片 -->
   <image class="background-image" src="/images/小程序背景.jpeg" mode="aspectFill"></image>
   
-  <!-- 修改用户信息区域 -->
-<view class="user-section">
-  <view class="user-header">
-    <block wx:if="{{hasUserInfo}}">
-      <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
-      <view class="user-info">
-        <text class="user-name">{{userInfo.nickName}}</text>
-        <text class="user-welcome">欢迎使用青莲社预约系统</text>
-        <!-- 将退出登录改为按钮 -->
-        <button class="logout-btn" bindtap="logout">
-          退出登录
-        </button>
-      </view>
-    </block>
-    <block wx:else>
-      <image class="user-avatar" src="/images/default-avatar.png" mode="aspectFill"></image>
-      <view class="user-info">
-        <text class="user-name">未登录</text>
-        <text class="user-welcome">点击下方按钮登录</text>
-      </view>
-    </block>
-  </view>
-  
-  <block wx:if="{{!hasUserInfo}}">
-    <button wx:if="{{canIUseGetUserProfile}}" class="auth-btn" bindtap="getUserProfile">
-      微信用户登录
-    </button>
-    <button wx:else class="auth-btn" open-type="getUserInfo" bindgetuserinfo="onGetUserInfo">
-      微信用户登录
-    </button>
-  </block>
-</view>
-
-  <!-- 手机号绑定区域 -->
-  <view class="phone-section {{!hasPhoneNumber ? 'need-phone' : ''}}">
-    <view class="phone-header">
-      <text class="phone-title">手机号绑定</text>
-      <block wx:if="{{hasPhoneNumber}}">
-        <view class="edit-btn" bindtap="editPhoneNumber">修改</view>
+  <view class="user-section">
+    <view class="user-header">
+      <block wx:if="{{hasUserInfo}}">
+        <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+        <view class="user-info">
+          <text class="user-name">{{userInfo.nickName}}</text>
+          <view class="user-role" wx:if="{{isAdmin}}">
+            <text class="role-tag admin">管理员</text>
+          </view>
+          <view class="user-role" wx:else>
+            <text class="role-tag user">普通用户</text>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <image class="user-avatar" src="/images/default-avatar.png" mode="aspectFill"></image>
+        <view class="user-info">
+          <text class="user-name">未登录</text>
+          <text class="user-welcome">点击下方按钮登录</text>
+        </view>
       </block>
     </view>
     
-    <block wx:if="{{hasPhoneNumber}}">
-      <text class="phone-number">{{phoneNumber}}</text>
-      <text class="phone-tip">已绑定手机号，可以正常使用预约功能</text>
+    <block wx:if="{{!hasUserInfo}}">
+      <button class="auth-btn" bindtap="login" loading="{{isLoading}}">
+        {{isLoading ? '登录中...' : '微信授权登录'}}
+      </button>
     </block>
+    
     <block wx:else>
-      <text class="phone-tip">未绑定手机号，无法使用预约功能</text>
-      <view class="phone-buttons">
-        <!-- 新的获取手机号方式 -->
-        <button 
-          class="phone-btn primary" 
-          open-type="getPhoneNumber"
-          bindgetphonenumber="getUserPhoneNumber"
-        >
-          微信一键绑定
-        </button>
-        
-        <!-- 或者保留原来的手动输入 -->
-        <button 
-          class="phone-btn secondary" 
-          bindtap="showCustomPhoneInput"
-          style="margin-top: 20rpx; background: #f8f9fa; color: #666;"
-        >
-          手动输入手机号
-        </button>
-      </view>
+      <button class="logout-btn" bindtap="logout">
+        退出登录
+      </button>
     </block>
   </view>
 
-  <!-- 功能菜单 -->
   <view class="menu-section">
     <view class="menu-item" bindtap="goToMyBookings">
       <view class="menu-left">
-        <image class="menu-icon" src="/images/booking-icon.png"></image>
+        <text class="menu-icon-text">📋</text>
         <text class="menu-text">我的预约</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
     
-    <view class="menu-item" bindtap="goToAdmin">
+    <view class="menu-item {{isAdmin ? '' : 'disabled'}}" bindtap="goToAdmin">
       <view class="menu-left">
-        <image class="menu-icon" src="/images/admin-icon.png"></image>
+        <text class="menu-icon-text">⚙️</text>
         <text class="menu-text">管理后台</text>
+        <text class="admin-badge" wx:if="{{isAdmin}}">管理员</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
   </view>
 
-  <!-- 底部信息 -->
-  <view class="footer">
-    <text class="footer-text">青莲社预约系统 v1.0</text>
-    <text class="footer-text">如有问题请联系管理员</text>
-  </view>
-
-  <!-- 自定义手机号绑定弹窗 -->
-  <view wx:if="{{showPhoneModal}}" class="phone-modal-overlay" catchtouchmove="preventTouchMove">
-    <view class="phone-modal-container">
-      <!-- 背景装饰 -->
-      <view class="modal-bg-decor">
-        <view class="decor-circle circle-1"></view>
-        <view class="decor-circle circle-2"></view>
-        <view class="decor-circle circle-3"></view>
-      </view>
-      
-      <view class="phone-modal-card">
-        <!-- 弹窗头部 -->
-        <view class="modal-header">
-          <view class="modal-icon"></view>
-          <text class="modal-title">绑定手机号</text>
-          <text class="modal-subtitle">绑定后可使用预约管理功能</text>
-        </view>
-        
-        <!-- 输入区域 -->
-        <view class="modal-content">
-          <view class="input-container">
-            <view class="input-label">
-              <text class="label-text">手机号码</text>
-              <text class="required-mark">*</text>
-            </view>
-            
-            <view class="phone-input-wrapper">
-              <text class="phone-prefix">+86</text>
-              <view class="prefix-divider"></view>
-              <input 
-                class="phone-input" 
-                type="number" 
-                placeholder="请输入11位手机号"
-                maxlength="11"
-                value="{{tempPhoneNumber}}"
-                bindinput="onPhoneInput"
-                focus="{{showPhoneModal}}"
-                confirm-type="next"
-              />
-              <view wx:if="{{tempPhoneNumber}}" class="clear-btn" bindtap="clearPhoneInput">
-                <text class="clear-icon">×</text>
-              </view>
-            </view>
-            
-            <!-- 手机号格式提示 -->
-            <view class="phone-tips">
-              <text class="tip-icon">!</text>
-              <text class="tip-text">请输入有效的中国大陆手机号</text>
-            </view>
-          </view>
-          
-          <!-- 协议条款 -->
-          <view class="agreement">
-            <checkbox-group bindchange="onAgreementChange">
-              <label class="agreement-label">
-                <checkbox value="agree" checked="{{hasAgreed}}" color="#07C160" />
-                <text class="agreement-text">我已阅读并同意</text>
-                <text class="agreement-link" bindtap="showAgreement">《用户协议》</text>
-                <text class="agreement-text">与</text>
-                <text class="agreement-link" bindtap="showPrivacy">《隐私政策》</text>
-              </label>
-            </checkbox-group>
-          </view>
-        </view>
-        
-        <!-- 按钮区域 -->
-        <view class="modal-actions">
-          <button 
-            class="modal-btn cancel-btn" 
-            hover-class="btn-hover" 
-            bindtap="closePhoneModal"
-          >
-            <text class="btn-text">稍后再说</text>
-          </button>
-          <button 
-            class="modal-btn confirm-btn {{!hasAgreed || !tempPhoneNumber ? 'disabled' : ''}}" 
-            hover-class="confirm-btn-hover"
-            bindtap="confirmPhoneInput"
-            disabled="{{!hasAgreed || !tempPhoneNumber}}"
-          >
-            <text class="btn-text">立即绑定</text>
-          </button>
-        </view>
-        
-        <!-- 关闭按钮 -->
-        <view class="close-btn" bindtap="closePhoneModal">
-          <text class="close-icon">×</text>
-        </view>
+  <view class="info-section">
+    <view class="info-card">
+      <view class="info-title">使用说明</view>
+      <view class="info-content">
+        <text>1. 点击"预订"页面进行参观预约</text>
+        <text>2. 在"我的预约"查看预约状态</text>
+        <text>3. 管理员可进入后台管理预约</text>
       </view>
     </view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">技术支持：广东药科大学医药信息工程学院</text>
+    <text class="footer-text">广东药科大学青莲社</text>
   </view>
 </view>
